@@ -28,7 +28,7 @@ From our to-do list.
 
 ## Item Display Features
 - [ ] Different colors for item tiers (Normal/Exceptional/Elite)
-- [ ] Custom sound for unique item drops
+[:FAILURE:] Custom sound for unique item drops
 - [ ] Socket count display customization // not sure if this is possible
 
 ## Item Quality Features
@@ -83,5 +83,5 @@ From our to-do list.
 - [ ] Custom highlight patterns
 - [ ] Custom padding options
 - [ ] Custom filter rules
-- [:FAILURE:] Custom sound effects // not possible
+  [:FAILURE:] Custom sound effects // not possible
 - [ ] Custom light pillar effects
