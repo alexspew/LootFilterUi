@@ -38,7 +38,7 @@ From our to-do list.
 - [ ] Custom quality indicator text
 
 ## Advanced Features
-- [] Light pillar customization for different item types
+- [ ] Light pillar customization for different item types
 - [ ] Custom drop sounds for specific item types
 - [ ] Item level display options
 - [ ] Big tooltip customization
