@@ -28,6 +28,7 @@ From our to-do list.
 
 ## Item Display Features
 - [ ] Different colors for item tiers (Normal/Exceptional/Elite)
+- [ ] 
 [:FAILURE:] Custom sound for unique item drops
 - [ ] Socket count display customization // not sure if this is possible
 
