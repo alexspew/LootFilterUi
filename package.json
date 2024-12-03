@@ -1,0 +1,58 @@
+{
+  "name": "loot-filter",
+  "version": "3.0.0",
+  "description": "A loot filter configuration tool for Diablo II Resurrected",
+  "author": {
+    "name": "Little bird"
+  },
+  "main": "dist_electron/main.js",
+  "scripts": {
+    "dev": "vite --port 3000",
+    "build": "npm run build:preload && npm run build:main && npm run build:renderer",
+    "build:main": "tsc -p tsconfig.main.json",
+    "build:renderer": "vite build",
+    "build:preload": "tsc src/preload.ts --outDir dist_electron --module commonjs --esModuleInterop true",
+    "preview": "vite preview",
+    "electron:dev": "concurrently \"npm run dev\" \"wait-on tcp:3000 && npm run build:main && npm run build:preload && cross-env NODE_ENV=development electron .\"",
+    "build:electron": "rimraf dist_electron && npm run build:main && npm run build:preload && npm run build:renderer && electron-builder",
+    "postinstall": "npm install rimraf -D"
+  },
+  "dependencies": {
+    "@babel/plugin-transform-react-jsx": "^7.25.9",
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@headlessui/react": "^1.7.17",
+    "@mui/icons-material": "^5.14.18",
+    "@mui/material": "^5.14.18",
+    "react": "^18.2.0",
+    "react-colorful": "^5.6.1",
+    "react-dom": "^18.2.0",
+    "zustand": "^4.4.6"
+  },
+  "devDependencies": {
+    "@tailwindcss/forms": "^0.5.9",
+    "@tailwindcss/nesting": "^0.0.0-insiders.565cd3e",
+    "@types/node": "^20.9.0",
+    "@types/react": "^18.2.15",
+    "@types/react-dom": "^18.2.7",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "@vitejs/plugin-react": "^4.0.3",
+    "autoprefixer": "^10.4.16",
+    "concurrently": "^8.2.2",
+    "cross-env": "^7.0.3",
+    "electron": "^27.0.4",
+    "electron-builder": "^24.6.4",
+    "electron-squirrel-startup": "^1.0.1",
+    "eslint": "^8.45.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.3",
+    "postcss": "^8.4.31",
+    "postcss-nesting": "^13.0.1",
+    "rimraf": "^6.0.1",
+    "tailwindcss": "^3.3.5",
+    "typescript": "^5.0.2",
+    "vite": "^4.4.5",
+    "wait-on": "^7.2.0"
+  }
+}
