@@ -1,0 +1,23 @@
+{
+  "appId": "com.remodded.lootfilter",
+  "files": [
+    "dist/**/*",
+    "dist_electron/**/*",
+    "package.json"
+  ],
+  "extraResources": [
+    {
+      "from": "dist_electron/preload.js",
+      "to": "app/preload.js"
+    }
+  ],
+  "directories": {
+    "output": "dist_electron",
+    "buildResources": "assets"
+  },
+  "asar": true,
+  "win": {
+    "target": "nsis",
+    "sign": null
+  }
+} 
