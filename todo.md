@@ -79,5 +79,5 @@
 - [ ] Custom highlight patterns
 - [ ] Custom padding options
 - [ ] Custom filter rules
-- [:FAILURE:] Custom sound effects // not possible
+- :FAILURE: Custom sound effects // not possible
 - [ ] Custom light pillar effects
