@@ -87,3 +87,45 @@ From our to-do list.
 - [ ] 
   [:FAILURE:] Custom sound effects // not possible
 - [ ] Custom light pillar effects
+
+## GitHub Actions Workflow for Electron Build
+
+This project uses GitHub Actions to automate the Electron build process on every commit to the `main` branch. The workflow is defined in the `.github/workflows/electron-build.yml` file.
+
+### Workflow Steps
+
+1. **Trigger**: The workflow is triggered on `push` events to the `main` branch.
+2. **Checkout**: The repository is checked out using the `actions/checkout@v2` action.
+3. **Setup Node.js**: The Node.js environment is set up using the `actions/setup-node@v2` action with Node.js version 14.
+4. **Install Dependencies**: Dependencies are installed using `npm install`.
+5. **Build Electron App**: The Electron app is built using the `npm run build:electron` script.
+
+### Workflow File
+
+```yaml
+name: Electron Build
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build Electron app
+        run: npm run build:electron
+```
