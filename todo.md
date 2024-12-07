@@ -3,7 +3,7 @@
 ## Components
 - [x] RuneSettings component
 - [x] RunePatternPreview component
-- [x] GemSettings component
+- [ ] GemSettings component
 - [ ] CharmSettings component // To do later
 - [x] ColorPicker component
 - [x] ConfigActions component
