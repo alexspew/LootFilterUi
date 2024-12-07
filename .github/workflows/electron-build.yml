@@ -3,9 +3,12 @@ name: Build and Release Electron App
 on:
   push:
     branches:
-      - main  # Trigger on pushes to the main branch
+      - main
     tags:
-      - 'v*'   # Trigger on tags starting with 'v'
+      - 'v*'
+
+permissions:
+  contents: write # Grant permission to create releases
 
 jobs:
   build:
@@ -22,19 +25,23 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20' # Use the Node.js version compatible with your project
+          node-version: '20'
 
       - name: Install dependencies
         run: npm install
 
+      - name: Install Snapcraft (Linux only)
+        run: sudo snap install snapcraft --classic
+        if: runner.os == 'Linux'
+
       - name: Build Electron App
         run: npm run build:electron
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # You can still use the default token
 
       - name: Release (on tag)
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v1
         with:
           files: dist_electron/*
-          draft: true # Creates a draft release (change to false to publish immediately)
+          draft: true
