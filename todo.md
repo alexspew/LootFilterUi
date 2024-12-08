@@ -3,11 +3,12 @@
 ## Components
 - [x] RuneSettings component
 - [x] RunePatternPreview component
-- [ ] GemSettings component
-- [ ] CharmSettings component // To do later
+- [x] GemSettings component
+- [x] CharmSettings component
 - [x] ColorPicker component
 - [x] ConfigActions component
 - [x] ModPathDialog component
+- [ ] Update CharmSettings component to include new unique charms (P0)
 
 ## Features
 - [x] Basic tab navigation
@@ -18,47 +19,45 @@
 - [x] File system integration
 - [x] Configuration backup/restore
 - [x] Change tracking
-- [ ] Configuration validation
-- [ ] Tooltips and help text // not sure if this is possible
-- [ ] In-game preview panel // not sure if this is possible
+- [x] Configuration validation
+- [ ] Tooltips and help text (P3)
 
 ## Item Display Features
-- [ ] Different colors for item tiers (Normal/Exceptional/Elite)
-- [ ] Custom sound for unique item drops
-- [ ] Socket count display customization // not sure if this is possible
+- [ ] Different colors for item tiers (Normal/Exceptional/Elite) (P2)
+- [ ] Custom sound for unique item drops (P3)
+- [ ] Socket count display customization (P3)
 
 ## Item Quality Features
-- [ ] Add quality indicators (n/x/e) for items
-- [ ] Customizable quality indicator positions (prefix/suffix)
-- [ ] Quality indicator styles (parentheses/brackets)
-- [ ] Custom quality indicator text
+- [ ] Add quality indicators (n/x/e) for items (P2)
+- [ ] Customizable quality indicator positions (prefix/suffix) (P2)
+- [ ] Quality indicator styles (parentheses/brackets) (P2)
+- [ ] Custom quality indicator text (P2)
 
 ## Advanced Features
-- [] Light pillar customization for different item types
-- [ ] Custom drop sounds for specific item types
-- [ ] Item level display options
-- [ ] Big tooltip customization
-- [ ] Custom filter list support
-- [ ] Gem quality filtering
-- [ ] Quest item highlighting
-- [ ] Endgame item special effects
-- [ ] Item-specific light pillar effects
-- [ ] Create custom JSON configs for unique/set items
-- [ ] Implement inheritance from base item types
-- [ ] Add VfxDefinitionComponent for specific items
-- [ ] Update item mappings in items.json
-- [ ] Research set item configuration options
-- [ ] Consider performance impact of multiple custom JSONs
+- [ ] Light pillar customization for different item types (P2)
+- [ ] Custom drop sounds for specific item types (P3)
+- [ ] Item level display options (P2)
+- [ ] Big tooltip customization (P2)
+- [ ] Custom filter list support (P3)
+- [ ] Gem quality filtering (P2)
+- [ ] Quest item highlighting (P3)
+- [ ] Endgame item special effects (P2)
+- [ ] Item-specific light pillar effects (P2)
+- [ ] Create custom JSON configs for unique/set items (P1) (-> Configuration validation)
+- [ ] Implement inheritance from base item types (P1) (-> Create custom JSON configs for unique/set items)
+- [ ] Add VfxDefinitionComponent for specific items (P2)
+- [ ] Update item mappings in items.json (P1)
+- [ ] Research set item configuration options (P2)
+- [ ] Consider performance impact of multiple custom JSONs (P2)
 
 ## UI Improvements
 - [x] Color picker with hex input
 - [x] Pattern preview with live updates
 - [x] Proper error handling for file operations
-- [ ] Add loading states
-- [ ] Add error handling for imports
-- [ ] Add success notifications
-- [ ] Improve mobile responsiveness
-- [ ] Add keyboard shortcuts
+- [x] Add loading states
+- [x] Add error handling for imports
+- [x] Add success notifications
+- [ ] Add keyboard shortcuts (P2)
 
 ## Type Safety
 - [x] Strong TypeScript interfaces
@@ -71,13 +70,13 @@
 - [x] Connect UI to mod.js
 - [x] Add file backup system
 - [x] Add change tracking
-- [ ] Add configuration validation
-- [ ] Add configuration migration
+- [x] Add configuration validation
+- [ ] Add configuration migration (P1)
 
 ## Customization Support
-- [ ] Custom color codes for specific item types
-- [ ] Custom highlight patterns
-- [ ] Custom padding options
-- [ ] Custom filter rules
-- :FAILURE: Custom sound effects // not possible
-- [ ] Custom light pillar effects
+- [ ] Custom color codes for specific item types (P2)
+- [ ] Custom highlight patterns (P2)
+- [ ] Custom padding options (P2)
+- [ ] Custom filter rules (P2)
+- [:FAILURE:] Custom sound effects // not possible
+- [ ] Custom light pillar effects (P2)

@@ -133,4 +133,21 @@ export function nameToD2RColor(name: keyof typeof BASE_COLORS): string {
  * @deprecated Use hexToD2RColor instead
  */
 export const hexToModPrefix = hexToD2RColor
+
+/**
+ * Converts a D2R color code to hex color
+ * @param d2r D2R color code (e.g. 'ÿc1')
+ * @returns Hex color code (e.g. '#FF0000')
+ */
+export const d2rToHexColor = (d2r: string | undefined): string => {
+  if (!d2r) return '#FFFFFF' // Default to white
+  
+  // Extract the color code character
+  const match = d2r.match(/ÿc([0-9a-fA-F;:\/\.])/)
+  if (!match) return '#FFFFFF'
+  
+  // Find the matching color mapping
+  const colorMapping = COLOR_MAPPINGS.find(c => c.d2r === `ÿc${match[1]}`)
+  return colorMapping ? colorMapping.hex : '#FFFFFF'
+}
  

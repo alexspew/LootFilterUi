@@ -2,6 +2,25 @@ import { useEffect, useState } from 'react'
 import { getCharmChangeHistory } from '../../services/modConfig'
 import { CharmChange } from '../../types'
 
+const CHARM_NAME_MAP: Record<string, string> = {
+  showAnnihilus: 'Annihilus',
+  showTorch: 'Hellfire Torch',
+  showGheeds: "Gheed's Fortune",
+  showBlankTalent: 'Blank Talent',
+  showSevenDeadlySins: 'Seven Deadly Sins (EEE)',
+  showColaCube: 'Cola Cube',
+  showHealthyBreakfast: 'Healthy Breakfast',
+  showUnholyCommander: 'Unholy Commander',
+  showCodexTestament1: 'Gula\'s Testament of Gluttony',
+  showCodexTestament2: 'Luxuria\'s Testament of Lust',
+  showCodexTestament3: 'Avaritia\'s Testament of Greed',
+  showCodexTestament4: 'Ira\'s Testament of Wrath',
+  showCodexTestament5: 'Acedia\'s Testament of Sloth',
+  showCodexTestament6: 'Vanagloria\'s Testament of Vanity',
+  showCodexTestament7: 'Superbia\'s Testament of Hubris',
+  // Add other charm types here if needed
+}
+
 export default function CharmChangeLog() {
   const [changes, setChanges] = useState<CharmChange[]>([])
 
@@ -40,10 +59,11 @@ export default function CharmChangeLog() {
                   {change.type}
                 </td>
                 <td className="whitespace-nowrap px-4 py-2 text-sm text-gray-300">
-                  {change.charmType}
+                  {/* Use the mapping for charm names */}
+                  {CHARM_NAME_MAP[change.charmType] || change.charmType}
                 </td>
                 <td className="px-4 py-2 text-sm text-gray-300">
-                  {typeof change.oldValue === 'boolean' 
+                  {typeof change.oldValue === 'boolean'
                     ? `${change.oldValue} → ${change.newValue}`
                     : `"${change.oldValue}" → "${change.newValue}"`}
                 </td>

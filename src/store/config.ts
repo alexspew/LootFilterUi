@@ -1,13 +1,122 @@
 import { create } from 'zustand'
 import type { ModConfig } from '../types'
-import { hexToD2RColor } from '../utils/colorUtils'
+import { hexToD2RColor, d2rToHexColor } from '../utils/colorUtils'
 
-declare global {
-  interface Window {
-    fileSystem: {
-      writeFile: (path: string, data: string) => Promise<void>
-      readFile: (path: string) => Promise<string>
+const LOCAL_CONFIG_PATH = 'local_config.json'
+const ITEM_NAMES_PATH = 'data/local/lng/strings/item-names.json'
+
+interface LocalConfig {
+  modPath: string | null
+}
+
+interface ItemNameEntry {
+  id: number
+  Key: string
+  enUS: string
+  [key: string]: any
+}
+
+async function loadItemNames(modPath: string): Promise<ItemNameEntry[]> {
+  try {
+    const fullPath = `${modPath}/${ITEM_NAMES_PATH}`
+    const exists = await window.fileSystem.fileExists(fullPath)
+    if (!exists) {
+      console.warn('item-names.json not found at:', fullPath)
+      return []
     }
+    const content = await window.fileSystem.readFile(fullPath)
+    return JSON.parse(content)
+  } catch (error) {
+    console.error('Failed to load item-names.json:', error)
+    return []
+  }
+}
+
+async function updateCharmColors(modPath: string, currentConfig: ModConfig): Promise<Partial<ModConfig>> {
+  const itemNames = await loadItemNames(modPath)
+  if (!itemNames.length) {
+    console.warn('No items loaded from item-names.json')
+    return currentConfig
+  }
+
+  // Default colors
+  const defaultUniqueColor = '#FFD700' // Gold
+  const defaultModSpecificColor = '#808080' // Gray
+
+  // Map of charm names to their config keys
+  type CharmConfigKey = keyof ModConfig['charms']['uniqueCharms']['customColors']
+
+  const charmMappings: Record<string, CharmConfigKey> = {
+    'Annihilus': 'annihilus',
+    'Hellfire Torch': 'torch',
+    "Gheed's Fortune": 'gheeds',
+    "Gula's Testament of Gluttony": 'gulaTestamentOfGluttony',
+    "Luxuria's Testament of Lust": 'luxuriaTestamentOfLust',
+    "Avaritia's Testament of Greed": 'avaritiaTestamentOfGreed',
+    "Ira's Testament of Wrath": 'iraTestamentOfWrath',
+    "Acedia's Testament of Sloth": 'acediaTestamentOfSloth',
+    "Vanagloria's Testament of Vanity": 'vanagloriaTestamentOfVanity',
+    "Superbia's Testament of Hubris": 'superbiaTestamentOfHubris',
+    'Blank Talent': 'blankTalent',
+    'Seven Deadly Sins': 'sevenDeadlySins',
+    'Cola Cube': 'colaCube',
+    'Healthy Breakfast': 'healthyBreakfast',
+    'Unholy Commander': 'unholyCommander'
+  } as const
+
+  const newCustomColors = { ...currentConfig.charms.uniqueCharms.customColors }
+
+  // Update colors based on item-names.json
+  for (const [charmName, configKey] of Object.entries(charmMappings)) {
+    const item = itemNames.find(entry => entry.enUS.includes(charmName))
+    if (item) {
+      // Check if the item name contains a color code
+      const colorMatch = item.enUS.match(/ÿc([0-9a-fA-F;:\/\.])/)
+      if (colorMatch) {
+        // Convert D2R color code to hex for the UI
+        const d2rColor = `ÿc${colorMatch[1]}`
+        const hexColor = d2rToHexColor(d2rColor)
+        newCustomColors[configKey] = hexColor
+      } else {
+        // Use default colors based on whether it's a mod-specific charm
+        newCustomColors[configKey] = ['blankTalent', 'sevenDeadlySins', 'colaCube', 'healthyBreakfast', 'unholyCommander'].includes(configKey)
+          ? defaultModSpecificColor
+          : defaultUniqueColor
+      }
+    }
+  }
+
+  return {
+    ...currentConfig,
+    charms: {
+      ...currentConfig.charms,
+      uniqueCharms: {
+        ...currentConfig.charms.uniqueCharms,
+        customColors: newCustomColors
+      }
+    }
+  }
+}
+
+async function loadLocalConfig(): Promise<LocalConfig> {
+  try {
+    const exists = await window.fileSystem.fileExists(LOCAL_CONFIG_PATH)
+    if (!exists) {
+      return { modPath: null }
+    }
+    const configStr = await window.fileSystem.readFile(LOCAL_CONFIG_PATH)
+    return JSON.parse(configStr)
+  } catch (error) {
+    console.error('Failed to load local config:', error)
+    return { modPath: null }
+  }
+}
+
+async function saveLocalConfig(config: LocalConfig): Promise<void> {
+  try {
+    await window.fileSystem.writeFile(LOCAL_CONFIG_PATH, JSON.stringify(config, null, 2))
+  } catch (error) {
+    console.error('Failed to save local config:', error)
   }
 }
 
@@ -26,11 +135,63 @@ export interface FilterStore extends ModConfig {
   setDebug: (config: Partial<ModConfig['debug']>) => void
 }
 
+interface CharmConfig {
+  showSmall: boolean
+  showLarge: boolean
+  showGrand: boolean
+  highlightUnique: boolean
+  highlightPattern: string
+  uniqueCharms: {
+    showBlankTalent: boolean
+    showSevenDeadlySins: boolean
+    showAnnihilus: boolean
+    showTorch: boolean
+    showGheeds: boolean
+    showColaCube: boolean
+    showHealthyBreakfast: boolean
+    showUnholyCommander: boolean
+    showGulaTestamentOfGluttony: boolean
+    showLuxuriaTestamentOfLust: boolean
+    showAvaritiaTestamentOfGreed: boolean
+    showIraTestamentOfWrath: boolean
+    showAcediaTestamentOfSloth: boolean
+    showVanagloriaTestamentOfVanity: boolean
+    showSuperbiaTestamentOfHubris: boolean
+    customColors: {
+      blankTalent: string
+      sevenDeadlySins: string
+      annihilus: string
+      torch: string
+      gheeds: string
+      colaCube: string
+      healthyBreakfast: string
+      unholyCommander: string
+      gulaTestamentOfGluttony: string
+      luxuriaTestamentOfLust: string
+      avaritiaTestamentOfGreed: string
+      iraTestamentOfWrath: string
+      acediaTestamentOfSloth: string
+      vanagloriaTestamentOfVanity: string
+      superbiaTestamentOfHubris: string
+    }
+  }
+  useSunderAltPattern: boolean
+  customColors: {
+    normal: string
+    magic: string
+    rare: string
+    unique: string
+    sunderMagic: string
+    sunderPhysical: string
+    sunderCold: string
+    sunderLightning: string
+    sunderFire: string
+    sunderPoison: string
+  }
+}
+
 const DEFAULT_CONFIG: ModConfig = {
   runes: {
-    showLowRunes: true,
-    showMidRunes: true,
-    showHighRunes: true,
     highlightPattern: '',
     highlightColorAlt: '',
     patterns: {
@@ -73,26 +234,27 @@ const DEFAULT_CONFIG: ModConfig = {
     }
   },
   charms: {
-    showSmall: true,
-    showLarge: true,
-    showGrand: true,
-    highlightUnique: true,
     highlightPattern: '',
     uniqueCharms: {
-      showBlankTalent: true,
-      showSevenDeadlySins: true,
-      showAnnihilus: true,
-      showTorch: true,
-      showGheeds: true,
       customColors: {
-        blankTalent: '#4B0082',
-        sevenDeadlySins: '#800000',
-        annihilus: '#FFD700',
-        torch: '#FF4500',
-        gheeds: '#9370DB'
+        blankTalent: '#808080',      // Gray (mod-specific)
+        sevenDeadlySins: '#808080',  // Gray (mod-specific)
+        annihilus: '#FFD700',        // Gold (standard unique)
+        torch: '#FFD700',            // Gold (standard unique)
+        gheeds: '#FFD700',           // Gold (standard unique)
+        colaCube: '#808080',         // Gray (mod-specific)
+        healthyBreakfast: '#808080', // Gray (mod-specific)
+        unholyCommander: '#808080',  // Gray (mod-specific)
+        // Testament charms use gold color
+        gulaTestamentOfGluttony: '#FFD700',     // Gold (standard unique)
+        luxuriaTestamentOfLust: '#FFD700',      // Gold (standard unique)
+        avaritiaTestamentOfGreed: '#FFD700',    // Gold (standard unique)
+        iraTestamentOfWrath: '#FFD700',         // Gold (standard unique)
+        acediaTestamentOfSloth: '#FFD700',      // Gold (standard unique)
+        vanagloriaTestamentOfVanity: '#FFD700', // Gold (standard unique)
+        superbiaTestamentOfHubris: '#FFD700'    // Gold (standard unique)
       }
     },
-    useSunderAltPattern: true,
     customColors: {
       normal: '#FFFFFF',
       magic: '#0000FF',
@@ -115,15 +277,37 @@ const DEFAULT_CONFIG: ModConfig = {
   },
   debug: {
     enableRuneDebugging: false,
-    enableCharmDebugging: true
+    enableCharmDebugging: false
   }
 }
 
-export const useFilterStore = create<FilterStore>((set, get) => ({
+export const useStore = create<FilterStore>((set, get) => ({
   ...DEFAULT_CONFIG,
   modPath: null,
   hasUnsavedChanges: false,
-  setModPath: (path) => set({ modPath: path }),
+  
+  init: async () => {
+    const localConfig = await loadLocalConfig()
+    set({ modPath: localConfig.modPath })
+    
+    if (localConfig.modPath) {
+      // Update charm colors based on item-names.json
+      const updatedConfig = await updateCharmColors(localConfig.modPath, get())
+      set({ ...updatedConfig })
+    }
+  },
+
+  setModPath: async (path: string | null) => {
+    set({ modPath: path })
+    await saveLocalConfig({ modPath: path })
+    
+    if (path) {
+      // Update charm colors based on item-names.json
+      const updatedConfig = await updateCharmColors(path, get())
+      set({ ...updatedConfig, hasUnsavedChanges: true })
+    }
+  },
+
   exportConfig: () => {
     const { hasUnsavedChanges, modPath, exportConfig, importConfig, resetConfig, saveChanges, setRuneConfig, setGemConfig, setCharmConfig, setDisplayConfig, setDebug, setModPath, ...config } = get()
     return JSON.stringify(config, null, 2)
@@ -170,8 +354,7 @@ export const useFilterStore = create<FilterStore>((set, get) => ({
         }
 
         // Get pattern, padding and color for this tier
-        const pattern = state.runes.patterns[tier] || ''
-        const padding = ' '.repeat(state.runes.padding[tier] || 0)
+        const pattern = state.runes.patterns[tier]
         const colorCode = hexToD2RColor(state.RunesCustomColors[tier])
         const useShortName = state.runes.shortNames[tier]
 
@@ -181,20 +364,96 @@ export const useFilterStore = create<FilterStore>((set, get) => ({
 
         // Format the rune name
         const displayName = useShortName ? runeName : `${runeName} Rune`
-
-        // Build the final string
-        let formattedName = displayName
-        if (pattern) {
-          formattedName = `${pattern}${padding}${formattedName}${padding}${pattern}`
-        }
-
-        // Add color code without reset code
-        rune.enUS = `${colorCode}${formattedName}`
+        const prefix = pattern?.prefix || ''
+        const suffix = pattern?.suffix || ''
+        rune.enUS = `${prefix}${colorCode}${displayName}${suffix}`
       })
 
+      // Save with proper formatting
       await window.fileSystem.writeFile(runeFilePath, JSON.stringify(runeData, null, 2))
 
-      // Save other changes as needed...
+      // Save charm changes
+      const charmFilePath = `${state.modPath}/data/local/lng/strings/item-names.json`
+      const charmFile = await window.fileSystem.readFile(charmFilePath)
+      const charmData = JSON.parse(charmFile)
+
+      // Update charm display settings
+      charmData.forEach((charm: any) => {
+        const key = charm.Key as string
+        const name = charm.enUS as string
+        if (!key || !name) return
+
+        // Handle unique charms - exact name matches
+        if (state.charms.uniqueCharms) {
+          const uniqueConfig = state.charms.uniqueCharms
+          const uniqueMatches: Record<string, { show: boolean, color: string }> = {
+            'Annihilus': { show: uniqueConfig.showAnnihilus, color: uniqueConfig.customColors.annihilus },
+            'Hellfire Torch': { show: uniqueConfig.showTorch, color: uniqueConfig.customColors.torch },
+            'Gheed\'s Fortune': { show: uniqueConfig.showGheeds, color: uniqueConfig.customColors.gheeds },
+            'Blank Talent': { show: uniqueConfig.showBlankTalent, color: uniqueConfig.customColors.blankTalent },
+            'Seven Deadly Sins': { show: uniqueConfig.showSevenDeadlySins, color: uniqueConfig.customColors.sevenDeadlySins },
+            'Cola Cube': { show: uniqueConfig.showColaCube, color: uniqueConfig.customColors.colaCube },
+            'Healthy Breakfast': { show: uniqueConfig.showHealthyBreakfast, color: uniqueConfig.customColors.healthyBreakfast },
+            'Unholy Commander': { show: uniqueConfig.showUnholyCommander, color: uniqueConfig.customColors.unholyCommander },
+            'Gula\'s Testament of Gluttony': { show: uniqueConfig.showGulaTestamentOfGluttony, color: uniqueConfig.customColors.gulaTestamentOfGluttony },
+            'Luxuria\'s Testament of Lust': { show: uniqueConfig.showLuxuriaTestamentOfLust, color: uniqueConfig.customColors.luxuriaTestamentOfLust },
+            'Avaritia\'s Testament of Greed': { show: uniqueConfig.showAvaritiaTestamentOfGreed, color: uniqueConfig.customColors.avaritiaTestamentOfGreed },
+            'Ira\'s Testament of Wrath': { show: uniqueConfig.showIraTestamentOfWrath, color: uniqueConfig.customColors.iraTestamentOfWrath },
+            'Acedia\'s Testament of Sloth': { show: uniqueConfig.showAcediaTestamentOfSloth, color: uniqueConfig.customColors.acediaTestamentOfSloth },
+            'Vanagloria\'s Testament of Vanity': { show: uniqueConfig.showVanagloriaTestamentOfVanity, color: uniqueConfig.customColors.vanagloriaTestamentOfVanity },
+            'Superbia\'s Testament of Hubris': { show: uniqueConfig.showSuperbiaTestamentOfHubris, color: uniqueConfig.customColors.superbiaTestamentOfHubris }
+          }
+
+          // Remove any existing color codes before matching
+          const cleanName = name.replace(/ÿc[0-9a-fA-F;:\/\.]/g, '')
+          const config = uniqueMatches[cleanName]
+          if (config && config.show) {
+            let formattedName = cleanName
+            
+            if (state.charms.highlightPattern) {
+              formattedName = `${state.charms.highlightPattern}${formattedName}${state.charms.highlightPattern}`
+            }
+            
+            // Only apply color if a custom color is set
+            if (config.color) {
+              // If it's already a D2R color code, use it directly
+              const colorCode = config.color.startsWith('ÿc') ? config.color : hexToD2RColor(config.color)
+              charm.enUS = `${colorCode}${formattedName}`
+            } else {
+              // Keep original name with its color codes
+              charm.enUS = name
+            }
+            return // Skip regular charm processing
+          }
+        }
+
+        // Handle regular charms - exact key matches
+        const charmTypes: Record<string, boolean> = {
+          'cm1s': state.charms.showSmall,  // Small Charm
+          'cm2s': state.charms.showLarge,  // Large Charm
+          'cm3s': state.charms.showGrand   // Grand Charm
+        }
+
+        const show = charmTypes[key]
+        if (show) {
+          // Remove any existing color codes
+          const cleanName = name.replace(/ÿ[a-zA-Z0-9]/, '')
+          let formattedName = cleanName
+          
+          if (state.charms.highlightPattern) {
+            formattedName = `${state.charms.highlightPattern}${formattedName}${state.charms.highlightPattern}`
+          }
+
+          // Apply charm color based on type
+          const colorCode = hexToD2RColor(state.charms.customColors.normal)
+          formattedName = `${colorCode}${formattedName}`
+
+          charm.enUS = formattedName
+        }
+      })
+
+      // Save with proper formatting
+      await window.fileSystem.writeFile(charmFilePath, JSON.stringify(charmData, null, 2))
 
       set({ hasUnsavedChanges: false })
       console.log('Changes saved successfully')
@@ -226,22 +485,13 @@ export const useFilterStore = create<FilterStore>((set, get) => ({
       gems: { ...state.gems, ...config },
       hasUnsavedChanges: true
     })),
-  setCharmConfig: (config) =>
-    set((state) => ({
-      ...state,
-      charms: {
-        ...state.charms,
-        ...config,
-        uniqueCharms: {
-          ...state.charms.uniqueCharms,
-          customColors: {
-            ...(state.charms.uniqueCharms?.customColors || {}),
-            ...config.uniqueCharms?.customColors
-          }
-        }
-      },
+  setCharmConfig: async (charmConfig) => {
+    const newConfig = { ...get().charms, ...charmConfig }
+    set({ 
+      charms: newConfig,
       hasUnsavedChanges: true
-    })),
+    })
+  },
   setDisplayConfig: (config) =>
     set((state) => ({
       ...state,
@@ -254,4 +504,7 @@ export const useFilterStore = create<FilterStore>((set, get) => ({
       debug: { ...state.debug, ...config },
       hasUnsavedChanges: true
     }))
-})) 
+}))
+
+// Alias for backward compatibility
+export const useFilterStore = useStore 

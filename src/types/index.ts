@@ -20,17 +20,19 @@ export interface RuneValidation {
   error?: string
 }
 
+export interface RunePattern {
+  prefix: string
+  suffix: string
+}
+
 export interface ModConfig {
   runes: {
-    showLowRunes: boolean
-    showMidRunes: boolean
-    showHighRunes: boolean
     highlightPattern: string
     highlightColorAlt: string
     patterns: {
-      lowRunes: string
-      midRunes: string
-      highRunes: string
+      lowRunes: RunePattern
+      midRunes: RunePattern
+      highRunes: RunePattern
     }
     padding: {
       lowRunes: number
@@ -50,11 +52,6 @@ export interface ModConfig {
     highRunes: string
   }
   gems: {
-    showChipped: boolean
-    showFlawed: boolean
-    showNormal: boolean
-    showFlawless: boolean
-    showPerfect: boolean
     highlightPattern: string
     customColors: {
       amethyst: string
@@ -67,26 +64,26 @@ export interface ModConfig {
     }
   }
   charms: {
-    showSmall: boolean
-    showLarge: boolean
-    showGrand: boolean
-    highlightUnique: boolean
     highlightPattern: string
     uniqueCharms: {
-      showBlankTalent: boolean
-      showSevenDeadlySins: boolean
-      showAnnihilus: boolean
-      showTorch: boolean
-      showGheeds: boolean
       customColors: {
         blankTalent: string
         sevenDeadlySins: string
         annihilus: string
         torch: string
         gheeds: string
+        colaCube: string
+        healthyBreakfast: string
+        unholyCommander: string
+        gulaTestamentOfGluttony: string
+        luxuriaTestamentOfLust: string
+        avaritiaTestamentOfGreed: string
+        iraTestamentOfWrath: string
+        acediaTestamentOfSloth: string
+        vanagloriaTestamentOfVanity: string
+        superbiaTestamentOfHubris: string
       }
     }
-    useSunderAltPattern: boolean
     customColors: {
       normal: string
       magic: string

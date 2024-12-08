@@ -3,25 +3,6 @@ import { useFilterStore } from '../../store/config'
 export default function CharmSettings() {
   const config = useFilterStore()
 
-  const handleToggle = (key: keyof typeof config.charms) => {
-    if (typeof config.charms[key] === 'boolean') {
-      config.setCharmConfig({
-        [key]: !config.charms[key]
-      })
-    }
-  }
-
-  const handleUniqueCharmToggle = (key: keyof typeof config.charms.uniqueCharms) => {
-    if (typeof config.charms.uniqueCharms[key] === 'boolean') {
-      config.setCharmConfig({
-        uniqueCharms: {
-          ...config.charms.uniqueCharms,
-          [key]: !config.charms.uniqueCharms[key]
-        }
-      })
-    }
-  }
-
   const handleColorChange = (key: keyof typeof config.charms.customColors, value: string) => {
     config.setCharmConfig({
       customColors: {
@@ -45,153 +26,269 @@ export default function CharmSettings() {
 
   return (
     <div className="space-y-6">
-      {/* Basic Charm Settings */}
-      <div>
-        <h3 className="text-lg font-medium text-gray-100">Basic Settings</h3>
-        <div className="mt-4 space-y-4">
-          <div className="flex items-center justify-between">
-            <label className="text-sm font-medium text-gray-300">Show Small Charms</label>
-            <button
-              type="button"
-              onClick={() => handleToggle('showSmall')}
-              className={`${
-                config.charms.showSmall ? 'bg-indigo-600' : 'bg-gray-700'
-              } relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none`}
-            >
-              <span
-                className={`${
-                  config.charms.showSmall ? 'translate-x-5' : 'translate-x-0'
-                } inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out`}
-              />
-            </button>
-          </div>
-
-          <div className="flex items-center justify-between">
-            <label className="text-sm font-medium text-gray-300">Show Large Charms</label>
-            <button
-              type="button"
-              onClick={() => handleToggle('showLarge')}
-              className={`${
-                config.charms.showLarge ? 'bg-indigo-600' : 'bg-gray-700'
-              } relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none`}
-            >
-              <span
-                className={`${
-                  config.charms.showLarge ? 'translate-x-5' : 'translate-x-0'
-                } inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out`}
-              />
-            </button>
-          </div>
-
-          <div className="flex items-center justify-between">
-            <label className="text-sm font-medium text-gray-300">Show Grand Charms</label>
-            <button
-              type="button"
-              onClick={() => handleToggle('showGrand')}
-              className={`${
-                config.charms.showGrand ? 'bg-indigo-600' : 'bg-gray-700'
-              } relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none`}
-            >
-              <span
-                className={`${
-                  config.charms.showGrand ? 'translate-x-5' : 'translate-x-0'
-                } inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out`}
-              />
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Unique Charm Settings */}
-      <div>
-        <h3 className="text-lg font-medium text-gray-100">Unique Charms</h3>
-        <div className="mt-4 space-y-4">
-          <div className="flex items-center justify-between">
-            <label className="text-sm font-medium text-gray-300">Show Annihilus</label>
-            <button
-              type="button"
-              onClick={() => handleUniqueCharmToggle('showAnnihilus')}
-              className={`${
-                config.charms.uniqueCharms.showAnnihilus ? 'bg-indigo-600' : 'bg-gray-700'
-              } relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none`}
-            >
-              <span
-                className={`${
-                  config.charms.uniqueCharms.showAnnihilus ? 'translate-x-5' : 'translate-x-0'
-                } inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out`}
-              />
-            </button>
-          </div>
-
-          <div className="flex items-center justify-between">
-            <label className="text-sm font-medium text-gray-300">Show Hellfire Torch</label>
-            <button
-              type="button"
-              onClick={() => handleUniqueCharmToggle('showTorch')}
-              className={`${
-                config.charms.uniqueCharms.showTorch ? 'bg-indigo-600' : 'bg-gray-700'
-              } relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none`}
-            >
-              <span
-                className={`${
-                  config.charms.uniqueCharms.showTorch ? 'translate-x-5' : 'translate-x-0'
-                } inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out`}
-              />
-            </button>
-          </div>
-
-          <div className="flex items-center justify-between">
-            <label className="text-sm font-medium text-gray-300">Show Gheed's Fortune</label>
-            <button
-              type="button"
-              onClick={() => handleUniqueCharmToggle('showGheeds')}
-              className={`${
-                config.charms.uniqueCharms.showGheeds ? 'bg-indigo-600' : 'bg-gray-700'
-              } relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none`}
-            >
-              <span
-                className={`${
-                  config.charms.uniqueCharms.showGheeds ? 'translate-x-5' : 'translate-x-0'
-                } inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out`}
-              />
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Color Settings */}
-      <div>
-        <h3 className="text-lg font-medium text-gray-100">Color Settings</h3>
-        <div className="mt-4 space-y-4">
-          {Object.entries(config.charms.customColors).map(([key, value]) => (
-            <div key={key} className="flex items-center justify-between">
-              <label className="text-sm font-medium text-gray-300">{key}</label>
-              <input
-                type="color"
-                value={value}
-                onChange={(e) => handleColorChange(key as keyof typeof config.charms.customColors, e.target.value)}
-                className="h-8 w-14 rounded border border-gray-600 bg-gray-700 p-1"
-              />
-            </div>
-          ))}
-        </div>
-      </div>
-
       {/* Unique Charm Colors */}
       <div>
         <h3 className="text-lg font-medium text-gray-100">Unique Charm Colors</h3>
         <div className="mt-4 space-y-4">
-          {Object.entries(config.charms.uniqueCharms.customColors).map(([key, value]) => (
-            <div key={key} className="flex items-center justify-between">
-              <label className="text-sm font-medium text-gray-300">{key}</label>
-              <input
-                type="color"
-                value={value}
-                onChange={(e) => handleUniqueColorChange(key as keyof typeof config.charms.uniqueCharms.customColors, e.target.value)}
-                className="h-8 w-14 rounded border border-gray-600 bg-gray-700 p-1"
-              />
-            </div>
-          ))}
+          {/* Standard Unique Charms */}
+          <div className="flex items-center justify-between">
+            <label className="text-sm font-medium text-gray-300">Annihilus</label>
+            <input
+              type="color"
+              value={config.charms.uniqueCharms.customColors.annihilus}
+              onChange={(e) => handleUniqueColorChange('annihilus', e.target.value)}
+              className="h-8 w-14 rounded border-gray-700 bg-gray-800"
+            />
+          </div>
+
+          <div className="flex items-center justify-between">
+            <label className="text-sm font-medium text-gray-300">Hellfire Torch</label>
+            <input
+              type="color"
+              value={config.charms.uniqueCharms.customColors.torch}
+              onChange={(e) => handleUniqueColorChange('torch', e.target.value)}
+              className="h-8 w-14 rounded border-gray-700 bg-gray-800"
+            />
+          </div>
+
+          <div className="flex items-center justify-between">
+            <label className="text-sm font-medium text-gray-300">Gheed's Fortune</label>
+            <input
+              type="color"
+              value={config.charms.uniqueCharms.customColors.gheeds}
+              onChange={(e) => handleUniqueColorChange('gheeds', e.target.value)}
+              className="h-8 w-14 rounded border-gray-700 bg-gray-800"
+            />
+          </div>
+
+          {/* Mod-specific Charms */}
+          <div className="flex items-center justify-between">
+            <label className="text-sm font-medium text-gray-300">Blank Talent</label>
+            <input
+              type="color"
+              value={config.charms.uniqueCharms.customColors.blankTalent}
+              onChange={(e) => handleUniqueColorChange('blankTalent', e.target.value)}
+              className="h-8 w-14 rounded border-gray-700 bg-gray-800"
+            />
+          </div>
+
+          <div className="flex items-center justify-between">
+            <label className="text-sm font-medium text-gray-300">Seven Deadly Sins</label>
+            <input
+              type="color"
+              value={config.charms.uniqueCharms.customColors.sevenDeadlySins}
+              onChange={(e) => handleUniqueColorChange('sevenDeadlySins', e.target.value)}
+              className="h-8 w-14 rounded border-gray-700 bg-gray-800"
+            />
+          </div>
+
+          <div className="flex items-center justify-between">
+            <label className="text-sm font-medium text-gray-300">Cola Cube</label>
+            <input
+              type="color"
+              value={config.charms.uniqueCharms.customColors.colaCube}
+              onChange={(e) => handleUniqueColorChange('colaCube', e.target.value)}
+              className="h-8 w-14 rounded border-gray-700 bg-gray-800"
+            />
+          </div>
+
+          <div className="flex items-center justify-between">
+            <label className="text-sm font-medium text-gray-300">Healthy Breakfast</label>
+            <input
+              type="color"
+              value={config.charms.uniqueCharms.customColors.healthyBreakfast}
+              onChange={(e) => handleUniqueColorChange('healthyBreakfast', e.target.value)}
+              className="h-8 w-14 rounded border-gray-700 bg-gray-800"
+            />
+          </div>
+
+          <div className="flex items-center justify-between">
+            <label className="text-sm font-medium text-gray-300">Unholy Commander</label>
+            <input
+              type="color"
+              value={config.charms.uniqueCharms.customColors.unholyCommander}
+              onChange={(e) => handleUniqueColorChange('unholyCommander', e.target.value)}
+              className="h-8 w-14 rounded border-gray-700 bg-gray-800"
+            />
+          </div>
+
+          {/* Testament Charms */}
+          <div className="flex items-center justify-between">
+            <label className="text-sm font-medium text-gray-300">Gula's Testament of Gluttony</label>
+            <input
+              type="color"
+              value={config.charms.uniqueCharms.customColors.gulaTestamentOfGluttony}
+              onChange={(e) => handleUniqueColorChange('gulaTestamentOfGluttony', e.target.value)}
+              className="h-8 w-14 rounded border-gray-700 bg-gray-800"
+            />
+          </div>
+
+          <div className="flex items-center justify-between">
+            <label className="text-sm font-medium text-gray-300">Luxuria's Testament of Lust</label>
+            <input
+              type="color"
+              value={config.charms.uniqueCharms.customColors.luxuriaTestamentOfLust}
+              onChange={(e) => handleUniqueColorChange('luxuriaTestamentOfLust', e.target.value)}
+              className="h-8 w-14 rounded border-gray-700 bg-gray-800"
+            />
+          </div>
+
+          <div className="flex items-center justify-between">
+            <label className="text-sm font-medium text-gray-300">Avaritia's Testament of Greed</label>
+            <input
+              type="color"
+              value={config.charms.uniqueCharms.customColors.avaritiaTestamentOfGreed}
+              onChange={(e) => handleUniqueColorChange('avaritiaTestamentOfGreed', e.target.value)}
+              className="h-8 w-14 rounded border-gray-700 bg-gray-800"
+            />
+          </div>
+
+          <div className="flex items-center justify-between">
+            <label className="text-sm font-medium text-gray-300">Ira's Testament of Wrath</label>
+            <input
+              type="color"
+              value={config.charms.uniqueCharms.customColors.iraTestamentOfWrath}
+              onChange={(e) => handleUniqueColorChange('iraTestamentOfWrath', e.target.value)}
+              className="h-8 w-14 rounded border-gray-700 bg-gray-800"
+            />
+          </div>
+
+          <div className="flex items-center justify-between">
+            <label className="text-sm font-medium text-gray-300">Acedia's Testament of Sloth</label>
+            <input
+              type="color"
+              value={config.charms.uniqueCharms.customColors.acediaTestamentOfSloth}
+              onChange={(e) => handleUniqueColorChange('acediaTestamentOfSloth', e.target.value)}
+              className="h-8 w-14 rounded border-gray-700 bg-gray-800"
+            />
+          </div>
+
+          <div className="flex items-center justify-between">
+            <label className="text-sm font-medium text-gray-300">Vanagloria's Testament of Vanity</label>
+            <input
+              type="color"
+              value={config.charms.uniqueCharms.customColors.vanagloriaTestamentOfVanity}
+              onChange={(e) => handleUniqueColorChange('vanagloriaTestamentOfVanity', e.target.value)}
+              className="h-8 w-14 rounded border-gray-700 bg-gray-800"
+            />
+          </div>
+
+          <div className="flex items-center justify-between">
+            <label className="text-sm font-medium text-gray-300">Superbia's Testament of Hubris</label>
+            <input
+              type="color"
+              value={config.charms.uniqueCharms.customColors.superbiaTestamentOfHubris}
+              onChange={(e) => handleUniqueColorChange('superbiaTestamentOfHubris', e.target.value)}
+              className="h-8 w-14 rounded border-gray-700 bg-gray-800"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Regular Charm Colors */}
+      <div>
+        <h3 className="text-lg font-medium text-gray-100">Regular Charm Colors</h3>
+        <div className="mt-4 space-y-4">
+          <div className="flex items-center justify-between">
+            <label className="text-sm font-medium text-gray-300">Normal</label>
+            <input
+              type="color"
+              value={config.charms.customColors.normal}
+              onChange={(e) => handleColorChange('normal', e.target.value)}
+              className="h-8 w-14 rounded border-gray-700 bg-gray-800"
+            />
+          </div>
+
+          <div className="flex items-center justify-between">
+            <label className="text-sm font-medium text-gray-300">Magic</label>
+            <input
+              type="color"
+              value={config.charms.customColors.magic}
+              onChange={(e) => handleColorChange('magic', e.target.value)}
+              className="h-8 w-14 rounded border-gray-700 bg-gray-800"
+            />
+          </div>
+
+          <div className="flex items-center justify-between">
+            <label className="text-sm font-medium text-gray-300">Rare</label>
+            <input
+              type="color"
+              value={config.charms.customColors.rare}
+              onChange={(e) => handleColorChange('rare', e.target.value)}
+              className="h-8 w-14 rounded border-gray-700 bg-gray-800"
+            />
+          </div>
+
+          <div className="flex items-center justify-between">
+            <label className="text-sm font-medium text-gray-300">Unique</label>
+            <input
+              type="color"
+              value={config.charms.customColors.unique}
+              onChange={(e) => handleColorChange('unique', e.target.value)}
+              className="h-8 w-14 rounded border-gray-700 bg-gray-800"
+            />
+          </div>
+
+          {/* Sunder Charm Colors */}
+          <div className="flex items-center justify-between">
+            <label className="text-sm font-medium text-gray-300">Sunder Magic</label>
+            <input
+              type="color"
+              value={config.charms.customColors.sunderMagic}
+              onChange={(e) => handleColorChange('sunderMagic', e.target.value)}
+              className="h-8 w-14 rounded border-gray-700 bg-gray-800"
+            />
+          </div>
+
+          <div className="flex items-center justify-between">
+            <label className="text-sm font-medium text-gray-300">Sunder Physical</label>
+            <input
+              type="color"
+              value={config.charms.customColors.sunderPhysical}
+              onChange={(e) => handleColorChange('sunderPhysical', e.target.value)}
+              className="h-8 w-14 rounded border-gray-700 bg-gray-800"
+            />
+          </div>
+
+          <div className="flex items-center justify-between">
+            <label className="text-sm font-medium text-gray-300">Sunder Cold</label>
+            <input
+              type="color"
+              value={config.charms.customColors.sunderCold}
+              onChange={(e) => handleColorChange('sunderCold', e.target.value)}
+              className="h-8 w-14 rounded border-gray-700 bg-gray-800"
+            />
+          </div>
+
+          <div className="flex items-center justify-between">
+            <label className="text-sm font-medium text-gray-300">Sunder Lightning</label>
+            <input
+              type="color"
+              value={config.charms.customColors.sunderLightning}
+              onChange={(e) => handleColorChange('sunderLightning', e.target.value)}
+              className="h-8 w-14 rounded border-gray-700 bg-gray-800"
+            />
+          </div>
+
+          <div className="flex items-center justify-between">
+            <label className="text-sm font-medium text-gray-300">Sunder Fire</label>
+            <input
+              type="color"
+              value={config.charms.customColors.sunderFire}
+              onChange={(e) => handleColorChange('sunderFire', e.target.value)}
+              className="h-8 w-14 rounded border-gray-700 bg-gray-800"
+            />
+          </div>
+
+          <div className="flex items-center justify-between">
+            <label className="text-sm font-medium text-gray-300">Sunder Poison</label>
+            <input
+              type="color"
+              value={config.charms.customColors.sunderPoison}
+              onChange={(e) => handleColorChange('sunderPoison', e.target.value)}
+              className="h-8 w-14 rounded border-gray-700 bg-gray-800"
+            />
+          </div>
         </div>
       </div>
     </div>
