@@ -4,6 +4,16 @@ const fs = require('fs/promises')
 
 // Disable GPU acceleration if issues occur
 app.disableHardwareAcceleration()
+app.commandLine.appendSwitch('disable-gpu-compositing')
+app.commandLine.appendSwitch('disable-software-rasterizer')
+
+// Add GPU crash detection
+app.on('gpu-process-crashed', (event, killed) => {
+  console.error('GPU process crashed', { killed })
+  if (mainWindow) {
+    mainWindow.webContents.reload()
+  }
+})
 
 // Handle Squirrel events for Windows installer
 if (require('electron-squirrel-startup')) app.quit()
@@ -36,7 +46,15 @@ function createWindow() {
     }
   })
 
-  // Handle loading errors
+  // Debug loading states
+  mainWindow.webContents.on('did-start-loading', () => {
+    console.log('Window started loading')
+  })
+
+  mainWindow.webContents.on('did-finish-load', () => {
+    console.log('Window finished loading')
+  })
+
   mainWindow.webContents.on('did-fail-load', (event, errorCode, errorDescription) => {
     console.error('Failed to load:', errorCode, errorDescription)
     if (process.env.NODE_ENV === 'development') {
@@ -47,13 +65,58 @@ function createWindow() {
     }
   })
 
+  // Debug renderer errors
+  mainWindow.webContents.on('render-process-gone', (event, details) => {
+    console.error('Renderer process gone:', details)
+    if (mainWindow) {
+      mainWindow.reload()
+    }
+  })
+
+  mainWindow.webContents.on('crashed', (event) => {
+    console.error('Renderer crashed')
+    if (mainWindow) {
+      mainWindow.reload()
+    }
+  })
+
+  // Set CSP headers
+  mainWindow.webContents.session.webRequest.onHeadersReceived((details, callback) => {
+    const cspDevRules = process.env.NODE_ENV === 'development' 
+      ? " 'unsafe-eval' http://localhost:3000" 
+      : "";
+
+    callback({
+      responseHeaders: {
+        ...details.responseHeaders,
+        'Content-Security-Policy': [
+          `default-src 'self'${cspDevRules};` +
+          `script-src 'self'${cspDevRules};` +
+          "style-src 'self' 'unsafe-inline';" +
+          "img-src 'self' data: https:;" +
+          `connect-src 'self' https: ${process.env.NODE_ENV === 'development' ? 'ws://localhost:3000' : ''};` +
+          "font-src 'self';"
+        ]
+      }
+    })
+  })
+
   if (process.env.NODE_ENV === 'development') {
     console.log('Loading development URL')
     mainWindow.loadURL('http://localhost:3000')
     mainWindow.webContents.openDevTools({ mode: 'detach' })
   } else {
     console.log('Loading production URL')
-    mainWindow.loadFile(path.join(__dirname, '../dist/index.html'))
+    try {
+      const htmlPath = path.join(__dirname, '../dist/index.html')
+      console.log('Loading HTML from:', htmlPath)
+      if (!require('fs').existsSync(htmlPath)) {
+        console.error('HTML file not found:', htmlPath)
+      }
+      mainWindow.loadFile(htmlPath)
+    } catch (error) {
+      console.error('Error loading production file:', error)
+    }
   }
 
   // Handle window close event
